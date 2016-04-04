@@ -1,0 +1,4 @@
+tasks/util/DBManager.class
+tasks/services/Service.class
+tasks/Task.class
+tasks/util/testMain.class
