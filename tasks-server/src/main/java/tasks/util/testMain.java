@@ -21,6 +21,6 @@ public class testMain {
         }
         
         
-        int ok = manager.insertTask("TEST","TEST");
+        manager.getTaskById(79);
     }
 }

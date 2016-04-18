@@ -14,6 +14,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -52,7 +53,7 @@ public class Service {
     @Path("/getTaskByIdJSON/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Task getTaskByIdJSON(@PathParam("id")int id){
-        return tasks.get(id);
+        return manager.getTaskById(id);
     }
     
     @GET
@@ -69,31 +70,42 @@ public class Service {
         return manager.getAllTasks();
     }
     
-//   @DELETE
-//   @Path("/deleteTask/{userid}")
-//   @Produces(MediaType.APPLICATION_XML)
-//   public String deleteUser(@PathParam("userid") int userid){
-//      int result = userDao.deleteUser(userid);
-//      if(result == 1){
-//         return SUCCESS_RESULT;
-//      }
-//      return FAILURE_RESULT;
-//   }
-    
-   @PUT
-   @Path("/createTask")
-   @Produces(MediaType.APPLICATION_XML)
-   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   public String createTask(@FormParam("id") int id,
-      @FormParam("title") String title,
-      @FormParam("description") String description,
-      @Context HttpServletResponse servletResponse) throws IOException{
-      Task task = new Task(id, title, description);
-      int result = manager.addTask(task);
+   @DELETE
+   @Path("/deleteTask/{taskid}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public String deleteUser(@PathParam("taskid") int taskid){
+      int result = manager.deleteTask(taskid);
       if(result == 1){
          return SUCCESS_RESULT;
       }
       return FAILURE_RESULT;
    }
     
+   @PUT
+   @Path("/createTask")
+   @Produces(MediaType.APPLICATION_JSON)
+   public String createTask(@FormParam("title") String title,
+      @FormParam("description") String description) {
+      Task task = new Task(title, description);
+      int result = manager.insertTask(task);
+      if(result == 1){
+         return SUCCESS_RESULT;
+      }
+      return FAILURE_RESULT;
+   }    
+   
+   @PUT
+   @Path("/updateTask")
+   @Produces(MediaType.APPLICATION_JSON)
+   public String updateTask(@FormParam("id") int id,
+      @FormParam("title") String title,
+      @FormParam("description") String description) {
+      Task task = new Task(id, title, description);
+      int result = manager.updateTask(task);
+      System.out.print("UPDATE DATA");
+      if(result == 1){
+         return SUCCESS_RESULT;
+      }
+      return FAILURE_RESULT;
+   }    
 }

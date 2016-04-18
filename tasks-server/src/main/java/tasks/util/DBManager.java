@@ -67,7 +67,44 @@ public class DBManager {
         return listTasks;
     }
     
-    public int insertTask(String title, String description){
+    public Task getTaskById(int idtask){
+        
+        List<Task> listTasks = new ArrayList<>();
+        try{
+            //STEP 4: Execute a query
+            System.out.println("Creating statement...");
+            stmt = conn.createStatement();
+            String sql;
+            sql = "SELECT id, title, description FROM tasks WHERE id = "+idtask+";";
+            ResultSet rs = stmt.executeQuery(sql);
+            
+            //STEP 5: Extract data from result set
+            Task currentTask = null;
+            while(rs.next()){
+                //Retrieve by column name
+                int id  = rs.getInt("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                
+                //Display values
+                currentTask = new Task();
+                currentTask.setId(id);
+                currentTask.setTitle(title);
+                currentTask.setDescription(description);
+                
+                listTasks.add(currentTask);
+                
+            }
+            //STEP 6: Clean-up environment
+        }catch(Exception e){
+            //Handle errors for JDBC
+            e.printStackTrace();
+        }
+        
+        return listTasks.get(0);
+    }
+    
+    public int insertTask(Task task){
         
         try{
             //STEP 4: Execute a query
@@ -75,13 +112,57 @@ public class DBManager {
             stmt = conn.createStatement();
             String sql;
             sql = "INSERT INTO tasks (title, description)" +
-                    " VALUES ('"+ title +"', '"+ description +"');";
+                    " VALUES ('"+ task.getTitle() +"', '"+ task.getDescription() +"');";
             
             System.out.println(sql);
             
             int rs = stmt.executeUpdate(sql);
             
             //STEP 6: Clean-up environment
+            
+            return rs;
+        }catch(Exception e){
+            //Handle errors for JDBC
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+    
+    public int deleteTask(int idTask){
+        
+        try{
+            //STEP 4: Execute a query
+            System.out.println("Creating statement...");
+            stmt = conn.createStatement();
+            String sql;
+            sql = "DELETE FROM tasks WHERE id =" + idTask + ";";
+            
+            System.out.println(sql);
+            
+            int rs = stmt.executeUpdate(sql);            
+            
+            return rs;
+        }catch(Exception e){
+            //Handle errors for JDBC
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+    
+     public int updateTask(Task task){
+        
+        try{
+            //STEP 4: Execute a query
+            System.out.println("Creating statement...");
+            stmt = conn.createStatement();
+            String sql;
+            sql = "UPDATE tasks SET title = '"+ task.getTitle() +"', description = '"+ task.getDescription()+"' WHERE id = " + task.getId() +";";
+            
+            System.out.println(sql);
+            
+            int rs = stmt.executeUpdate(sql);            
             
             return rs;
         }catch(Exception e){
@@ -104,11 +185,6 @@ public class DBManager {
             //Handle errors for Class.forName
             e.printStackTrace();
         }
-    }
-
-    public int addTask(Task task) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        return 0;
     }
     
 }
